@@ -33,7 +33,7 @@ bool createTcpServer ::listenServer(int port)
         std::cout<<errno<<std::endl;
     }
     listen(localMasterSocket,5);
-    std::cout<<"Listeing on server with port:{}"<<getPort()<<std::endl;
+    std::cout<<"Listening on server with port:{}"<<getPort()<<std::endl;
     socklen_t sockLen=sizeof(getSocketAddress());
     int clientSocket=accept(localMasterSocket,(sockaddr*)getSocketAddress(),&sockLen);
 
@@ -51,11 +51,16 @@ bool createTcpServer ::listenServer(int port)
     while(i<5)
     {
         std::cout<<"Client Connected"<<std::endl;
-        struct sockaddr destinationAddress;
+        struct sockaddr_in destinationAddress;
         
         size_t size=sendto(clientSocket,(char *)welcomeMessage.c_str()  ,strlen(welcomeMessage.c_str()) ,0,(struct sockaddr*)&destinationAddress,sizeof(destinationAddress));
-        std::cout<<size<<" bytes sent" <<std::endl;
-        usleep(60000000);
+        if(size ==-1)
+        {
+            std::cout<<"client disconnected with error code :"<<errno<<std::endl;
+            break;
+        }
+        std::cout<<size<<" bytes sent to " <<inet_ntoa(destinationAddress.sin_addr) << " port"<< ntohs(destinationAddress.sin_port)<<std::endl;        
+        usleep(6000000);
         i++;
     }
     close(clientSocket);
