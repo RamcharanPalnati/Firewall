@@ -1,5 +1,9 @@
 #pragma once
 
+#ifndef DEBUG 
+#define DEBUG 1
+#endif 
+
 #include<signal.h>
 #include <iostream>
 #include <cstdio>
